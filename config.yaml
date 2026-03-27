@@ -1,0 +1,117 @@
+# RedaktFlow configuration
+# Operator channel, automation connectors, LLM provider, pipelines
+
+telegram:
+  token_env: REDAKTFLOW_TG_TOKEN
+  secrets_file: secrets.yaml
+  security:
+    max_input_length: 500
+    rate_limit: 10
+    strip_markdown: true
+
+make:
+  api_key_env: MAKE_API_KEY
+  region: eu1                    # eu1, eu2, us1, us2
+  team_id: 0                    # your Make.com team ID
+
+n8n:
+  base_url: https://your-n8n.example.com
+  api_key_env: N8N_API_KEY
+
+provider:
+  type: openrouter
+  api_key_env: OPENROUTER_API_KEY
+  base_url: https://openrouter.ai/api/v1
+
+models:
+  haiku:
+    model: anthropic/claude-haiku-4-5
+    max_tokens: 1024
+    cost_per_1k_input: 0.001
+    cost_per_1k_output: 0.005
+  gpt-4o-mini:
+    model: openai/gpt-4o-mini
+    max_tokens: 1024
+    cost_per_1k_input: 0.00015
+    cost_per_1k_output: 0.0006
+
+roles:
+  classifier: gpt-4o-mini
+  drafter: haiku
+
+budgets:
+  per_step_tokens: 2048
+  per_pipeline_tokens: 10000
+  per_day_tokens: 100000
+
+timeouts:
+  ai_call: 30s
+  operator_approval: 4h
+  pipeline_total: 5m
+
+pipelines:
+  # Monitor Make.com scenarios and alert on failures
+  - name: scenario-health
+    schedule: 1h
+    steps:
+      - name: check-failures
+        type: deterministic
+        action: make_failed_executions
+        vars:
+          scenario_id: "0"       # your scenario ID
+
+      - name: diagnose
+        type: ai
+        skill: optimize-scenario
+
+      - name: alert
+        type: deterministic
+        action: notify
+
+  # Draft content from a topic queue
+  - name: content-draft
+    schedule: manual
+    steps:
+      - name: mock-input
+        type: deterministic
+
+      - name: draft
+        type: ai
+        skill: draft-post
+
+      - name: review
+        type: approval
+        mode: hitl
+        channel: telegram
+
+  # Repurpose published content for another platform
+  - name: content-repurpose
+    schedule: manual
+    steps:
+      - name: mock-input
+        type: deterministic
+
+      - name: repurpose
+        type: ai
+        skill: repurpose-content
+
+      - name: review
+        type: approval
+        mode: hitl
+        channel: telegram
+
+  # Audit n8n workflows for optimization opportunities
+  - name: workflow-audit
+    schedule: 7d
+    steps:
+      - name: fetch-workflows
+        type: deterministic
+        action: n8n_list_workflows
+
+      - name: analyze
+        type: ai
+        skill: optimize-scenario
+
+      - name: report
+        type: deterministic
+        action: notify

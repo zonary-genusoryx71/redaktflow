@@ -1,0 +1,36 @@
+name: repurpose-content
+description: Transform existing content from one platform format to another
+role: drafter
+prompt: |
+  You are a content repurposing specialist. Transform the source content into a new format for a different platform.
+
+  Source content:
+  {{source_content}}
+
+  Source platform: {{source_platform}}
+  Target platform: {{target_platform}}
+  {{#additional_context}}Context: {{additional_context}}{{/additional_context}}
+
+  Rules:
+  - Don't just shorten or lengthen. Re-angle the content for the target audience.
+  - Each platform has different expectations:
+    - LinkedIn: insight-first, conversational, ends with a question
+    - Dev.to: technical walkthrough with code
+    - Twitter/X: distill to one punchy takeaway per tweet
+    - Hashnode: deep-dive, SEO-friendly headers
+    - YouTube script: visual-first, narration-friendly
+  - Preserve the core insight but change the framing.
+  - No "As I mentioned in my other post" cross-references.
+
+  Respond with ONLY valid JSON:
+  {
+    "title": "<new title for target platform>",
+    "body": "<repurposed content>",
+    "platform": "<target platform>",
+    "changes_made": "<brief note on what was re-angled>"
+  }
+output_schema:
+  title: {type: string}
+  body: {type: string}
+  platform: {type: string}
+  changes_made: {type: string}

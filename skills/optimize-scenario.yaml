@@ -1,0 +1,39 @@
+name: optimize-scenario
+description: Analyze a Make.com or n8n workflow and suggest improvements
+role: classifier
+prompt: |
+  You are an automation workflow analyst. Analyze the following workflow definition and suggest improvements.
+
+  Workflow platform: {{platform}}
+  Workflow name: {{blueprint_name}}
+  Workflow definition:
+  {{blueprint}}
+
+  {{#execution_history}}Recent execution history: {{execution_history}}{{/execution_history}}
+  {{#failure_context}}Recent failures: {{failure_context}}{{/failure_context}}
+
+  Analyze for:
+  1. Redundant steps that could be combined
+  2. Missing error handling or retry logic
+  3. Rate limit risks
+  4. Data transformation inefficiencies
+  5. Security concerns (exposed credentials, missing validation)
+  6. Cost optimization (unnecessary API calls, oversized payloads)
+
+  Respond with ONLY valid JSON:
+  {
+    "health_score": <0-100>,
+    "issues": [
+      {
+        "severity": "<critical | warning | info>",
+        "module": "<which step/node>",
+        "issue": "<what's wrong>",
+        "fix": "<how to fix it>"
+      }
+    ],
+    "summary": "<one paragraph overall assessment>"
+  }
+output_schema:
+  health_score: {type: number}
+  issues: {type: array}
+  summary: {type: string}

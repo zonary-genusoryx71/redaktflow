@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 200" fill="none">
+  <!-- Flow lines -->
+  <g stroke="#F0A030" stroke-width="3" stroke-linecap="round" opacity="0.6">
+    <path d="M 60 70 Q 90 50 120 70 Q 150 90 180 70"/>
+    <path d="M 60 100 Q 90 80 120 100 Q 150 120 180 100"/>
+    <path d="M 60 130 Q 90 110 120 130 Q 150 150 180 130"/>
+  </g>
+  <!-- Pen nib -->
+  <g stroke="#F0A030" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 105 65 L 120 100 L 135 65"/>
+    <line x1="120" y1="100" x2="120" y2="115"/>
+  </g>
+  <!-- Text -->
+  <text x="195" y="115" font-family="monospace" font-size="56" font-weight="bold" fill="#E6EDF3">Redakt</text>
+  <text x="430" y="115" font-family="monospace" font-size="56" font-weight="bold" fill="#F0A030">Flow</text>
+  <!-- Tagline -->
+  <text x="195" y="145" font-family="monospace" font-size="13" fill="#8B949E">AI content operations for Make.com and n8n</text>
+</svg>
