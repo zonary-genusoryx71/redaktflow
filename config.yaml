@@ -18,6 +18,9 @@ n8n:
   base_url: https://your-n8n.example.com
   api_key_env: N8N_API_KEY
 
+notion:
+  api_key_env: NOTION_API_KEY       # Notion integration token
+
 provider:
   type: openrouter
   api_key_env: OPENROUTER_API_KEY

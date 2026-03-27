@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -25,6 +26,7 @@ type Config struct {
 	Telegram  TelegramConfig         `yaml:"telegram"`
 	Make      MakeConfig             `yaml:"make"`
 	N8N       N8NConfig              `yaml:"n8n"`
+	Notion    NotionConfig           `yaml:"notion"`
 	Provider  ProviderConfig         `yaml:"provider"`
 	Models    map[string]ModelConfig `yaml:"models"`
 	Roles     map[string]string      `yaml:"roles"`
@@ -239,8 +241,9 @@ func (t *TelegramChannel) WaitForApproval(ctx context.Context, msg string) (stri
 // --- Pipeline Runner ---
 
 var (
-	makeConn *MakeConnector
-	n8nConn  *N8NConnector
+	makeConn   *MakeConnector
+	n8nConn    *N8NConnector
+	notionConn *NotionConnector
 )
 
 func runPipeline(ctx context.Context, pipeline PipelineConfig, cfg Config, skills *SkillRegistry, ch OperatorChannel, budget *Budget) error {
@@ -368,6 +371,44 @@ func runPipeline(ctx context.Context, pipeline PipelineConfig, cfg Config, skill
 				data["workflow"] = string(wfJSON)
 				data["workflow_name"] = wf.Name
 				log.Printf("[pipeline:%s][step:%s] fetched workflow: %s", pipeline.Name, step.Name, wf.Name)
+
+			// --- Notion actions ---
+
+			case "notion_query_database":
+				if notionConn == nil {
+					return fmt.Errorf("[step:%s] notion connector not configured", step.Name)
+				}
+				dbID, _ := step.Vars["database_id"]
+				if dbID == "" {
+					return fmt.Errorf("[step:%s] notion_query_database requires database_id var", step.Name)
+				}
+				var filter json.RawMessage
+				if f, ok := step.Vars["filter"]; ok && f != "" {
+					filter = json.RawMessage(f)
+				}
+				pages, err := notionConn.QueryDatabase(dbID, filter, 20)
+				if err != nil {
+					return fmt.Errorf("[step:%s] notion query database failed: %w", step.Name, err)
+				}
+				if len(pages) == 0 {
+					log.Printf("[pipeline:%s][step:%s] no pages found, skipping", pipeline.Name, step.Name)
+					return nil
+				}
+				data["pages"] = FormatNotionPagesForPrompt(pages)
+				data["page_count"] = fmt.Sprintf("%d", len(pages))
+				log.Printf("[pipeline:%s][step:%s] fetched %d pages", pipeline.Name, step.Name, len(pages))
+
+			case "notion_list_databases":
+				if notionConn == nil {
+					return fmt.Errorf("[step:%s] notion connector not configured", step.Name)
+				}
+				dbs, err := notionConn.ListDatabases()
+				if err != nil {
+					return fmt.Errorf("[step:%s] notion list databases failed: %w", step.Name, err)
+				}
+				data["databases"] = FormatNotionDatabasesForPrompt(dbs)
+				data["database_count"] = fmt.Sprintf("%d", len(dbs))
+				log.Printf("[pipeline:%s][step:%s] fetched %d databases", pipeline.Name, step.Name, len(dbs))
 
 			case "notify":
 				msg := ""
@@ -593,10 +634,13 @@ func (s *Scheduler) GetDue() []PipelineConfig {
 // --- Main ---
 
 func main() {
-	configPath := "config.yaml"
-	if len(os.Args) > 1 {
-		configPath = os.Args[1]
-	}
+	// CLI flags
+	configFlag := flag.String("config", "config.yaml", "path to config file")
+	runFlag := flag.String("run", "", "run a single pipeline by name and exit")
+	listFlag := flag.Bool("list", false, "list available pipelines and exit")
+	flag.Parse()
+
+	configPath := *configFlag
 
 	data, err := os.ReadFile(configPath)
 	if err != nil {
@@ -606,6 +650,15 @@ func main() {
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		log.Fatalf("failed to parse config: %v", err)
+	}
+
+	// --- List mode ---
+	if *listFlag {
+		fmt.Printf("Available pipelines (%d):\n\n", len(cfg.Pipelines))
+		for _, p := range cfg.Pipelines {
+			fmt.Printf("  %-24s schedule: %s  steps: %d\n", p.Name, p.Schedule, len(p.Steps))
+		}
+		return
 	}
 
 	// Load secrets
@@ -642,6 +695,17 @@ func main() {
 		}
 	}
 
+	// Init Notion connector
+	if cfg.Notion.APIKeyEnv != "" {
+		apiKey := os.Getenv(cfg.Notion.APIKeyEnv)
+		if apiKey != "" {
+			notionConn, err = NewNotionConnector(cfg.Notion, apiKey)
+			if err != nil {
+				log.Printf("[notion] WARNING: failed to initialize: %v", err)
+			}
+		}
+	}
+
 	// Init operator channel
 	var ch OperatorChannel
 	if cfg.Telegram.token != "" {
@@ -651,13 +715,41 @@ func main() {
 		}
 		log.Printf("[telegram] operator channel configured")
 	} else {
-		log.Fatalf("no operator channel configured (telegram token required)")
+		log.Printf("[telegram] no token set — approval steps will timeout")
+		ch = &TelegramChannel{} // stub, approval steps will timeout
 	}
 
 	budget := &Budget{dayStart: time.Now()}
+
+	// --- One-shot mode ---
+	if *runFlag != "" {
+		var target *PipelineConfig
+		for i := range cfg.Pipelines {
+			if cfg.Pipelines[i].Name == *runFlag {
+				target = &cfg.Pipelines[i]
+				break
+			}
+		}
+		if target == nil {
+			log.Fatalf("pipeline %q not found. Use --list to see available pipelines.", *runFlag)
+		}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		sigCh := make(chan os.Signal, 1)
+		signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+		go func() { <-sigCh; cancel() }()
+
+		log.Printf("[redaktflow] running pipeline: %s", target.Name)
+		if err := runPipeline(ctx, *target, cfg, skillReg, ch, budget); err != nil {
+			log.Fatalf("[pipeline:%s] error: %v", target.Name, err)
+		}
+		log.Printf("[redaktflow] pipeline %s completed", target.Name)
+		return
+	}
+
+	// --- Daemon mode ---
 	scheduler := NewScheduler(cfg.Pipelines)
 
-	// Signal handling
 	ctx, cancel := context.WithCancel(context.Background())
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
@@ -668,9 +760,8 @@ func main() {
 		cancel()
 	}()
 
-	log.Printf("[redaktflow] started with %d pipelines", len(cfg.Pipelines))
+	log.Printf("[redaktflow] started with %d pipelines (daemon mode)", len(cfg.Pipelines))
 
-	// Main loop
 	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()
 

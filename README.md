@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">RedaktFlow</h1>
-<p align="center">AI content operations engine for Make.com and n8n.</p>
+<p align="center">AI content operations engine for Make.com, n8n, and Notion.</p>
 
 <p align="center">
   <a href="https://github.com/renezander030/redaktflow/stargazers"><img src="https://img.shields.io/github/stars/renezander030/redaktflow?style=flat-square" alt="Stars"></a>
@@ -12,7 +12,9 @@
   <img src="https://img.shields.io/badge/build-passing-brightgreen?style=flat-square" alt="Build">
 </p>
 
-RedaktFlow monitors, optimizes, and orchestrates your content automation workflows. It connects to Make.com and n8n, adds AI-powered content drafting and repurposing, and keeps a human in the loop before anything publishes.
+RedaktFlow monitors, optimizes, and orchestrates your content automation workflows. It connects to Make.com, n8n, and Notion, adds AI-powered content drafting and repurposing, and keeps a human in the loop before anything publishes.
+
+Runs as a CLI tool on your laptop or as a daemon on a server. No VPS required.
 
 **Your workflows run on rules. This adds editorial judgment.**
 
@@ -21,7 +23,16 @@ RedaktFlow monitors, optimizes, and orchestrates your content automation workflo
 ```bash
 git clone https://github.com/renezander030/redaktflow.git && cd redaktflow
 cp secrets.yaml.example secrets.yaml   # add your API keys
-go build -o redaktflow . && ./redaktflow
+go build -o redaktflow .
+
+# Run a single pipeline and exit
+./redaktflow --run scenario-health
+
+# Or run as a daemon with scheduled pipelines
+./redaktflow
+
+# List available pipelines
+./redaktflow --list
 ```
 
 Define your pipelines in `config.yaml`, your prompts in `skills/`, and RedaktFlow handles the rest.
@@ -43,6 +54,7 @@ Define your pipelines in `config.yaml`, your prompts in `skills/`, and RedaktFlo
 |---|---|
 | **Make.com** | List/create/update scenarios, monitor executions, read/write blueprints, trigger runs |
 | **n8n** | List/create/update workflows, monitor executions, retry failures, audit nodes |
+| **Notion** | Query databases, create/update pages, sync content calendars, manage structured data |
 | **Slack / Telegram** | Operator approval channel (human-in-the-loop) |
 
 Adding a new integration means writing one Go file. Each connector follows the same pattern: fetch data, classify with AI, draft output, get human approval.
@@ -135,6 +147,9 @@ n8n:
   base_url: https://your-n8n.example.com
   api_key_env: N8N_API_KEY
 
+notion:
+  api_key_env: NOTION_API_KEY
+
 provider:
   type: openrouter
   api_key_env: OPENROUTER_API_KEY
@@ -168,9 +183,10 @@ output_schema:
 
 ```
 redaktflow/
-  main.go          # Engine: pipeline runner, operator bot, scheduler, guardrails
+  main.go          # Engine: pipeline runner, CLI, scheduler, guardrails
   make.go          # Make.com integration (scenarios, executions, blueprints)
   n8n.go           # n8n integration (workflows, executions, credentials)
+  notion.go        # Notion integration (databases, pages, content calendar)
   config.yaml      # Pipelines, models, budgets, timeouts
   secrets.yaml     # Private config (operator IDs) -- gitignored
   skills/          # Prompt templates with schema validation
