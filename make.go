@@ -167,11 +167,18 @@ func (c *MakeConnector) GetScenario(scenarioID int) (*MakeScenario, error) {
 }
 
 // CreateScenario creates a new scenario with a blueprint.
+// If no blueprint is provided, a minimal empty blueprint is used.
 func (c *MakeConnector) CreateScenario(name string, teamID int, blueprint json.RawMessage) (*MakeScenario, error) {
+	if blueprint == nil || len(blueprint) == 0 {
+		blueprint = json.RawMessage(`{"flow":[{"id":1,"module":"json:ParseJSON","version":1,"mapper":{"json":"{}"},"metadata":{"designer":{"x":0,"y":0},"expect":[{"name":"json","type":"text","label":"JSON string","required":true}]}}],"metadata":{"version":1},"name":"` + name + `"}`)
+	}
+
+	// Make.com API expects blueprint and scheduling as JSON strings, not objects
 	body := map[string]interface{}{
-		"name":      name,
-		"teamId":    teamID,
-		"blueprint": blueprint,
+		"name":       name,
+		"teamId":     teamID,
+		"blueprint":  string(blueprint),
+		"scheduling": `{"type":"indefinitely","interval":900}`,
 	}
 
 	data, err := c.request("POST", "/scenarios", body)
