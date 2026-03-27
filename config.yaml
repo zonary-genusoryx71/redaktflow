@@ -12,7 +12,7 @@ telegram:
 make:
   api_key_env: MAKE_API_KEY
   region: eu1                    # eu1, eu2, us1, us2
-  team_id: 0                    # your Make.com team ID
+  team_id: 1329133
 
 n8n:
   base_url: https://your-n8n.example.com

@@ -1,0 +1,397 @@
+{
+    "name": "Scenario 3 — Adaptation",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": null,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "expect": [
+                    {
+                        "name": "content_title",
+                        "type": "text",
+                        "label": "Content Title",
+                        "required": true
+                    },
+                    {
+                        "name": "content_body_en",
+                        "type": "text",
+                        "label": "EN Content",
+                        "required": true
+                    },
+                    {
+                        "name": "brand",
+                        "type": "text",
+                        "label": "Brand",
+                        "required": true
+                    },
+                    {
+                        "name": "platform",
+                        "type": "text",
+                        "label": "Platform",
+                        "required": true
+                    },
+                    {
+                        "name": "mode",
+                        "type": "text",
+                        "label": "Mode",
+                        "required": true
+                    },
+                    {
+                        "name": "chinese_variant",
+                        "type": "text",
+                        "label": "Chinese Variant",
+                        "required": true
+                    },
+                    {
+                        "name": "output_page_id",
+                        "type": "text",
+                        "label": "Output Page ID",
+                        "required": true
+                    },
+                    {
+                        "name": "brand_voice",
+                        "type": "text",
+                        "label": "Brand Voice"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "datastore:SearchRecord",
+            "version": 1,
+            "parameters": {
+                "datastore": 108246,
+                "continueWhenNoRes": false,
+                "limit": null
+            },
+            "mapper": {
+                "filter": [
+                    [
+                        {
+                            "a": "id",
+                            "o": "text:equal",
+                            "b": "anthropic"
+                        }
+                    ]
+                ],
+                "sort": [],
+                "mappAbleLimit": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 200,
+                    "y": -60
+                },
+                "restore": {
+                    "parameters": {
+                        "datastore": {
+                            "label": "My data store"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "datastore",
+                        "type": "datastore",
+                        "label": "Data store",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "filter",
+                        "type": "filter",
+                        "label": "Filter",
+                        "required": true,
+                        "options": "rpc://datastore/1.15.1/RpcGetUDTKeys"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key"
+                    },
+                    {
+                        "name": "data",
+                        "type": "collection",
+                        "label": "Record",
+                        "spec": [
+                            {
+                                "name": "value",
+                                "type": "text"
+                            },
+                            {
+                                "name": "id",
+                                "type": "text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "module": "datastore:SearchRecord",
+            "version": 1,
+            "parameters": {
+                "datastore": 108246,
+                "continueWhenNoRes": false,
+                "limit": null
+            },
+            "mapper": {
+                "filter": [
+                    [
+                        {
+                            "a": "id",
+                            "o": "text:equal",
+                            "b": "notion"
+                        }
+                    ]
+                ],
+                "sort": [],
+                "mappAbleLimit": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 200,
+                    "y": 60
+                },
+                "restore": {
+                    "parameters": {
+                        "datastore": {
+                            "label": "My data store"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "datastore",
+                        "type": "datastore",
+                        "label": "Data store",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "filter",
+                        "type": "filter",
+                        "label": "Filter",
+                        "required": true,
+                        "options": "rpc://datastore/1.15.1/RpcGetUDTKeys"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key"
+                    },
+                    {
+                        "name": "data",
+                        "type": "collection",
+                        "label": "Record",
+                        "spec": [
+                            {
+                                "name": "value",
+                                "type": "text"
+                            },
+                            {
+                                "name": "id",
+                                "type": "text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "url": "https://api.anthropic.com/v1/messages",
+                "method": "post",
+                "headers": [
+                    {
+                        "name": "x-api-key",
+                        "value": "{{10.data.value}}"
+                    },
+                    {
+                        "name": "anthropic-version",
+                        "value": "2023-06-01"
+                    }
+                ],
+                "qs": [],
+                "bodyType": "raw",
+                "parseResponse": true,
+                "contentType": "application/json",
+                "data": "{\"model\":\"claude-haiku-4-5-20251001\",\"max_tokens\":1024,\"system\":\"You are a content generation API. You MUST respond with ONLY valid JSON. No markdown, no code fences, no explanations, no commentary, no refusals. Never wrap output in ```json blocks. If inputs seem mismatched, still generate the best content you can in the requested format. Your entire response must be parseable by JSON.parse().\",\"messages\":[{\"role\":\"user\",\"content\":\"Mode: {{1.mode}}\\nSource: English\\nTarget: Traditional Chinese\\nChinese variant: {{1.chinese_variant}}\\n\\nBrand voice: {{1.brand_voice}}\\n\\nSource content:\\nTitle: {{1.content_title}}\\nBody: {{1.content_body_en}}\\n\\nIf mode is translate: faithful translation.\\nIf mode is adapt: rewrite for Chinese audience. Different angle, same core message.\\nIf mode is independent: write original Traditional Chinese content.\\n\\nReturn JSON: {\\\"title_cn\\\": \\\"<title>\\\", \\\"body_cn\\\": \\\"<content>\\\", \\\"variant\\\": \\\"traditional\\\"}\"},{\"role\":\"assistant\",\"content\":\"{\"}]}",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true,
+                "gzip": true,
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "timeout": "",
+                "ca": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 400,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 12,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "mapper": {
+                "json": "{{\"{\" + replace(replace(3.data.content[].text; \"```json\"; \"\"); \"```\"; \"\")}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                },
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "url": "https://api.notion.com/v1/pages/{{1.output_page_id}}",
+                "method": "patch",
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Bearer {{11.data.value}}"
+                    },
+                    {
+                        "name": "Notion-Version",
+                        "value": "2022-06-28"
+                    }
+                ],
+                "qs": [],
+                "bodyType": "raw",
+                "parseResponse": true,
+                "contentType": "application/json",
+                "data": "{\"properties\":{\"Content_CN\":{\"rich_text\":[{\"text\":{\"content\":\"{{replace(replace(12.body_cn; newline; \" \"); chr(34); chr(39))}}\"}}]},\"Chinese_Variant\":{\"select\":{\"name\":\"{{1.chinese_variant}}\"}}}}",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true,
+                "gzip": true,
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "timeout": "",
+                "ca": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 800,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 5,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "body": "{\"status\":\"adapted\",\"variant\":\"{{1.chinese_variant}}\"}",
+                "status": "200",
+                "headers": [
+                    {
+                        "key": "content-type",
+                        "value": "application/json"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1000,
+                    "y": 0
+                }
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}

@@ -1,0 +1,361 @@
+{
+    "name": "Scenario 1 — Intake",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": null,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "expect": [
+                    {
+                        "name": "request_id",
+                        "type": "text",
+                        "label": "Request Page ID",
+                        "required": true
+                    },
+                    {
+                        "name": "request_title",
+                        "type": "text",
+                        "label": "Request Title",
+                        "required": true
+                    },
+                    {
+                        "name": "topic",
+                        "type": "text",
+                        "label": "Topic",
+                        "required": true
+                    },
+                    {
+                        "name": "brand",
+                        "type": "text",
+                        "label": "Brand",
+                        "required": true
+                    },
+                    {
+                        "name": "platform",
+                        "type": "text",
+                        "label": "Platform",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "datastore:SearchRecord",
+            "version": 1,
+            "parameters": {
+                "datastore": 108246,
+                "continueWhenNoRes": false,
+                "limit": null
+            },
+            "mapper": {
+                "filter": [
+                    [
+                        {
+                            "a": "id",
+                            "o": "text:equal",
+                            "b": "notion"
+                        }
+                    ]
+                ],
+                "sort": [],
+                "mappAbleLimit": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 200,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "datastore": {
+                            "label": "My data store"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "datastore",
+                        "type": "datastore",
+                        "label": "Data store",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "filter",
+                        "type": "filter",
+                        "label": "Filter",
+                        "required": true,
+                        "options": "rpc://datastore/1.15.1/RpcGetUDTKeys"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key"
+                    },
+                    {
+                        "name": "data",
+                        "type": "collection",
+                        "label": "Record",
+                        "spec": [
+                            {
+                                "name": "value",
+                                "type": "text"
+                            },
+                            {
+                                "name": "id",
+                                "type": "text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "url": "https://api.notion.com/v1/pages/{{1.request_id}}",
+                "method": "patch",
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Bearer {{10.data.value}}"
+                    },
+                    {
+                        "name": "Notion-Version",
+                        "value": "2022-06-28"
+                    }
+                ],
+                "qs": [],
+                "bodyType": "raw",
+                "parseResponse": true,
+                "contentType": "application/json",
+                "data": "{\"properties\":{\"Status\":{\"select\":{\"name\":\"Processing\"}}}}",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true,
+                "gzip": true,
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "timeout": "",
+                "ca": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 400,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "url": "https://api.notion.com/v1/databases/330925ae-cb13-8130-8404-d199fef0494b/query",
+                "method": "post",
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Bearer {{10.data.value}}"
+                    },
+                    {
+                        "name": "Notion-Version",
+                        "value": "2022-06-28"
+                    }
+                ],
+                "qs": [],
+                "bodyType": "raw",
+                "parseResponse": true,
+                "contentType": "application/json",
+                "data": "{\"filter\":{\"and\":[{\"property\":\"Brand\",\"select\":{\"equals\":\"{{1.brand}}\"}},{\"property\":\"Content_Type\",\"select\":{\"equals\":\"Brand Voice\"}}]},\"page_size\":1}",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true,
+                "gzip": true,
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "timeout": "",
+                "ca": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 4,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "url": "https://api.notion.com/v1/databases/330925ae-cb13-8130-8404-d199fef0494b/query",
+                "method": "post",
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Bearer {{10.data.value}}"
+                    },
+                    {
+                        "name": "Notion-Version",
+                        "value": "2022-06-28"
+                    }
+                ],
+                "qs": [],
+                "bodyType": "raw",
+                "parseResponse": true,
+                "contentType": "application/json",
+                "data": "{\"filter\":{\"and\":[{\"property\":\"Brand\",\"select\":{\"equals\":\"{{1.brand}}\"}},{\"property\":\"Content_Type\",\"select\":{\"equals\":\"Sample Post\"}}]},\"page_size\":1}",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true,
+                "gzip": true,
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "timeout": "",
+                "ca": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 800,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 5,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "url": "https://hook.eu1.make.com/izpglhaapgwaycg0avxkg1sohw6bbtya",
+                "method": "post",
+                "headers": [
+                    {
+                        "name": "x-make-apikey",
+                        "value": "Stelle7889_"
+                    }
+                ],
+                "qs": [],
+                "bodyType": "raw",
+                "parseResponse": true,
+                "contentType": "application/json",
+                "data": "{\"request_title\":\"{{1.request_title}}\",\"topic\":\"{{1.topic}}\",\"brand\":\"{{1.brand}}\",\"platform\":\"{{1.platform}}\",\"brand_voice\":\"{{3.data.results[].properties.Source__Text.rich_text[].plain_text}}\",\"sample_post\":\"{{4.data.results[].properties.Source__Text.rich_text[].plain_text}}\"}",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true,
+                "gzip": true,
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "timeout": "",
+                "ca": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1000,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 6,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "body": "{\"status\":\"forwarded_to_content_gen\",\"request_id\":\"{{1.request_id}}\",\"brand\":\"{{1.brand}}\"}",
+                "status": "200",
+                "headers": [
+                    {
+                        "key": "content-type",
+                        "value": "application/json"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0
+                }
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}

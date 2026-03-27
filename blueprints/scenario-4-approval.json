@@ -1,0 +1,138 @@
+{
+    "name": "Scenario 4 — Approval Router",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": null,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "expect": [
+                    {
+                        "name": "page_id",
+                        "type": "text",
+                        "label": "Page ID",
+                        "required": true
+                    },
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "label": "Title",
+                        "required": true
+                    },
+                    {
+                        "name": "body_preview",
+                        "type": "text",
+                        "label": "Body Preview"
+                    },
+                    {
+                        "name": "platform",
+                        "type": "text",
+                        "label": "Platform",
+                        "required": true
+                    },
+                    {
+                        "name": "brand",
+                        "type": "text",
+                        "label": "Brand",
+                        "required": true
+                    },
+                    {
+                        "name": "telegram_bot_token",
+                        "type": "text",
+                        "label": "Telegram Bot Token",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "url": "https://api.telegram.org/bot{{1.telegram_bot_token}}/sendMessage",
+                "method": "post",
+                "headers": [],
+                "qs": [],
+                "bodyType": "raw",
+                "parseResponse": true,
+                "contentType": "application/json",
+                "data": "{\"chat_id\":\"525240338\",\"text\":\"[Review] {{1.brand}} / {{1.platform}}\\n\\n{{1.title}}\\n\\nReview in Notion.\",\"parse_mode\":\"HTML\"}",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true,
+                "gzip": true,
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "timeout": "",
+                "ca": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "body": "{\"status\":\"notification_sent\",\"page_id\":\"{{1.page_id}}\"}",
+                "status": "200",
+                "headers": [
+                    {
+                        "key": "content-type",
+                        "value": "application/json"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                }
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}

@@ -1,0 +1,1176 @@
+{
+    "name": "Scenario 2 — Content Generation",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 2728755,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "contentgen-webhook1"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "datastore:SearchRecord",
+            "version": 1,
+            "parameters": {
+                "datastore": 108246,
+                "continueWhenNoRes": false,
+                "limit": null
+            },
+            "mapper": {
+                "filter": [
+                    [
+                        {
+                            "a": "id",
+                            "o": "text:equal",
+                            "b": "anthropic"
+                        }
+                    ]
+                ],
+                "sort": [],
+                "mappAbleLimit": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 200,
+                    "y": -80
+                },
+                "restore": {
+                    "parameters": {
+                        "datastore": {
+                            "label": "My data store"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "datastore",
+                        "type": "datastore",
+                        "label": "Data store",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module returns no results"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "filter",
+                        "type": "filter",
+                        "label": "Filter",
+                        "required": true,
+                        "options": "rpc://datastore/1.15.1/RpcGetUDTKeys"
+                    },
+                    {
+                        "name": "sort",
+                        "type": "array",
+                        "label": "Sort",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "label": "Key",
+                                "type": "select",
+                                "options": [],
+                                "required": true,
+                                "dynamic": true
+                            },
+                            {
+                                "name": "order",
+                                "label": "Order",
+                                "type": "select",
+                                "options": [
+                                    {
+                                        "label": "Ascending",
+                                        "value": 1
+                                    },
+                                    {
+                                        "label": "Descending",
+                                        "value": -1
+                                    }
+                                ],
+                                "required": true
+                            }
+                        ]
+                    },
+                    {
+                        "name": "mappAbleLimit",
+                        "type": "uinteger",
+                        "label": "Mappable Limit"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key"
+                    },
+                    {
+                        "name": "data",
+                        "type": "collection",
+                        "label": "Record",
+                        "spec": [
+                            {
+                                "name": "value",
+                                "label": null,
+                                "help": "",
+                                "type": "text",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "name": "id",
+                                "label": null,
+                                "help": "",
+                                "type": "text",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "module": "datastore:SearchRecord",
+            "version": 1,
+            "parameters": {
+                "datastore": 108246,
+                "continueWhenNoRes": false,
+                "limit": null
+            },
+            "mapper": {
+                "filter": [
+                    [
+                        {
+                            "a": "id",
+                            "o": "text:equal",
+                            "b": "notion"
+                        }
+                    ]
+                ],
+                "sort": [],
+                "mappAbleLimit": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 200,
+                    "y": 80
+                },
+                "restore": {
+                    "parameters": {
+                        "datastore": {
+                            "label": "My data store"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "datastore",
+                        "type": "datastore",
+                        "label": "Data store",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module returns no results"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "filter",
+                        "type": "filter",
+                        "label": "Filter",
+                        "required": true,
+                        "options": "rpc://datastore/1.15.1/RpcGetUDTKeys"
+                    },
+                    {
+                        "name": "sort",
+                        "type": "array",
+                        "label": "Sort",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "label": "Key",
+                                "type": "select",
+                                "options": [],
+                                "required": true,
+                                "dynamic": true
+                            },
+                            {
+                                "name": "order",
+                                "label": "Order",
+                                "type": "select",
+                                "options": [
+                                    {
+                                        "label": "Ascending",
+                                        "value": 1
+                                    },
+                                    {
+                                        "label": "Descending",
+                                        "value": -1
+                                    }
+                                ],
+                                "required": true
+                            }
+                        ]
+                    },
+                    {
+                        "name": "mappAbleLimit",
+                        "type": "uinteger",
+                        "label": "Mappable Limit"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key"
+                    },
+                    {
+                        "name": "data",
+                        "type": "collection",
+                        "label": "Record",
+                        "spec": [
+                            {
+                                "name": "value",
+                                "label": null,
+                                "help": "",
+                                "type": "text",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "name": "id",
+                                "label": null,
+                                "help": "",
+                                "type": "text",
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "parameters": {},
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 450,
+                    "y": 0
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 3,
+                            "module": "http:ActionSendData",
+                            "version": 3,
+                            "parameters": {
+                                "handleErrors": true,
+                                "useNewZLibDeCompress": true
+                            },
+                            "mapper": {
+                                "url": "https://api.anthropic.com/v1/messages",
+                                "method": "post",
+                                "headers": [
+                                    {
+                                        "name": "x-api-key",
+                                        "value": "{{10.data.value}}"
+                                    },
+                                    {
+                                        "name": "anthropic-version",
+                                        "value": "2023-06-01"
+                                    }
+                                ],
+                                "qs": [],
+                                "bodyType": "raw",
+                                "parseResponse": true,
+                                "contentType": "application/json",
+                                "data": "{\"model\":\"claude-haiku-4-5-20251001\",\"max_tokens\":1024,\"system\":\"You are a content generation API. You MUST respond with ONLY valid JSON. No markdown, no code fences, no explanations, no commentary, no refusals. Never wrap output in ```json blocks. If inputs seem mismatched, still generate the best content you can in the requested format. Your entire response must be parseable by JSON.parse().\",\"messages\":[{\"role\":\"user\",\"content\":\"You are a content writer for a professional services brand.\\n\\nBRAND VOICE:\\n{{1.brand_voice}}\\n\\nREFERENCE POST (match this style):\\n{{1.sample_post}}\\n\\nCONTENT REQUEST:\\nTitle: {{1.request_title}}\\nTopic: {{1.topic}}\\nPlatform: {{1.platform}}\\n\\nWrite a post matching the brand voice. Generate EN content only.\\n\\nReturn ONLY valid JSON:\\n{\\\"title\\\": \\\"<title>\\\", \\\"body_en\\\": \\\"<full post in English>\\\", \\\"platform\\\": \\\"{{1.platform}}\\\"}\"},{\"role\":\"assistant\",\"content\":\"{\"}]}",
+                                "serializeUrl": false,
+                                "shareCookies": false,
+                                "followRedirect": true,
+                                "useQuerystring": false,
+                                "followAllRedirects": false,
+                                "rejectUnauthorized": true,
+                                "gzip": true,
+                                "useMtls": false,
+                                "authPass": "",
+                                "authUser": "",
+                                "timeout": "",
+                                "ca": ""
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 700,
+                                    "y": -200
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "POST"
+                                        },
+                                        "headers": {
+                                            "mode": "chose"
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw"
+                                        },
+                                        "contentType": {
+                                            "label": "JSON (application/json)"
+                                        },
+                                        "qs": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "handleErrors",
+                                        "type": "boolean",
+                                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useNewZLibDeCompress",
+                                        "type": "hidden"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "serializeUrl",
+                                        "type": "boolean",
+                                        "label": "Serialize URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "get",
+                                                "head",
+                                                "post",
+                                                "put",
+                                                "patch",
+                                                "delete",
+                                                "options"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "qs",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Query String"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "validate": {
+                                            "enum": [
+                                                "raw",
+                                                "x_www_form_urlencoded",
+                                                "multipart_form_data"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseResponse",
+                                        "type": "boolean",
+                                        "label": "Parse response",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Content type",
+                                        "validate": {
+                                            "enum": [
+                                                "text/plain",
+                                                "application/json",
+                                                "application/xml",
+                                                "text/xml",
+                                                "text/html",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Request content"
+                                    },
+                                    {
+                                        "name": "followAllRedirects",
+                                        "type": "boolean",
+                                        "label": "Follow all redirect",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 12,
+                            "module": "json:ParseJSON",
+                            "version": 1,
+                            "mapper": {
+                                "json": "{{\"{\" + replace(replace(3.data.content[].text; \"```json\"; \"\"); \"```\"; \"\")}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 950,
+                                    "y": -200
+                                },
+                                "expect": [
+                                    {
+                                        "name": "json",
+                                        "type": "text",
+                                        "label": "JSON string",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "module": "http:ActionSendData",
+                            "version": 3,
+                            "parameters": {
+                                "handleErrors": true,
+                                "useNewZLibDeCompress": true
+                            },
+                            "mapper": {
+                                "url": "https://api.notion.com/v1/pages",
+                                "method": "post",
+                                "headers": [
+                                    {
+                                        "name": "Authorization",
+                                        "value": "Bearer {{11.data.value}}"
+                                    },
+                                    {
+                                        "name": "Notion-Version",
+                                        "value": "2022-06-28"
+                                    }
+                                ],
+                                "qs": [],
+                                "bodyType": "raw",
+                                "parseResponse": true,
+                                "contentType": "application/json",
+                                "data": "{\"parent\":{\"database_id\":\"330925ae-cb13-81c7-98f0-e77c1ae4b47e\"},\"properties\":{\"Name\":{\"title\":[{\"text\":{\"content\":\"{{12.title}}\"}}]},\"Status\":{\"select\":{\"name\":\"Review\"}},\"Platform\":{\"select\":{\"name\":\"{{12.platform}}\"}},\"Content_EN\":{\"rich_text\":[{\"text\":{\"content\":\"{{replace(replace(12.body_en; newline; \" \"); '\"'; \"'\")}}\"}}]}}}",
+                                "serializeUrl": false,
+                                "shareCookies": false,
+                                "followRedirect": true,
+                                "useQuerystring": false,
+                                "followAllRedirects": false,
+                                "rejectUnauthorized": true,
+                                "gzip": true,
+                                "useMtls": false,
+                                "authPass": "",
+                                "authUser": "",
+                                "timeout": "",
+                                "ca": ""
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": -200
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "POST"
+                                        },
+                                        "headers": {
+                                            "mode": "chose"
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw"
+                                        },
+                                        "contentType": {
+                                            "label": "JSON (application/json)"
+                                        },
+                                        "qs": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "handleErrors",
+                                        "type": "boolean",
+                                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useNewZLibDeCompress",
+                                        "type": "hidden"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "serializeUrl",
+                                        "type": "boolean",
+                                        "label": "Serialize URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "get",
+                                                "head",
+                                                "post",
+                                                "put",
+                                                "patch",
+                                                "delete",
+                                                "options"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "qs",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Query String"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "validate": {
+                                            "enum": [
+                                                "raw",
+                                                "x_www_form_urlencoded",
+                                                "multipart_form_data"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseResponse",
+                                        "type": "boolean",
+                                        "label": "Parse response",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Content type",
+                                        "validate": {
+                                            "enum": [
+                                                "text/plain",
+                                                "application/json",
+                                                "application/xml",
+                                                "text/xml",
+                                                "text/html",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Request content"
+                                    },
+                                    {
+                                        "name": "followAllRedirects",
+                                        "type": "boolean",
+                                        "label": "Follow all redirect",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "label": "Legacy & Co — EN only",
+                    "filter": {
+                        "name": "Brand is Legacy & Co",
+                        "conditions": [
+                            [
+                                {
+                                    "a": "{{1.brand}}",
+                                    "b": "Legacy & Co",
+                                    "o": "text:equal"
+                                }
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 5,
+                            "module": "http:ActionSendData",
+                            "version": 3,
+                            "parameters": {
+                                "handleErrors": true,
+                                "useNewZLibDeCompress": true
+                            },
+                            "mapper": {
+                                "url": "https://api.anthropic.com/v1/messages",
+                                "method": "post",
+                                "headers": [
+                                    {
+                                        "name": "x-api-key",
+                                        "value": "{{10.data.value}}"
+                                    },
+                                    {
+                                        "name": "anthropic-version",
+                                        "value": "2023-06-01"
+                                    }
+                                ],
+                                "qs": [],
+                                "bodyType": "raw",
+                                "parseResponse": true,
+                                "contentType": "application/json",
+                                "data": "{\"model\":\"claude-haiku-4-5-20251001\",\"max_tokens\":2048,\"system\":\"You are a content generation API. You MUST respond with ONLY valid JSON. No markdown, no code fences, no explanations, no commentary, no refusals. Never wrap output in ```json blocks. If inputs seem mismatched, still generate the best content you can in the requested format. Your entire response must be parseable by JSON.parse().\",\"messages\":[{\"role\":\"user\",\"content\":\"You are a content writer for Bababaa, an educational brand for children aged 6-12.\\n\\nBRAND VOICE:\\n{{1.brand_voice}}\\n\\nREFERENCE POST (match this format):\\n{{1.sample_post}}\\n\\nCONTENT REQUEST:\\nTitle: {{1.request_title}}\\nTopic: {{1.topic}}\\nPlatform: {{1.platform}}\\n\\nGenerate trilingual content (EN, Traditional Chinese, Malay) in a SINGLE pass. Include learning objectives, target age, and scene notes.\\n\\nReturn ONLY valid JSON:\\n{\\\"title\\\": \\\"<title>\\\", \\\"learning_objective\\\": \\\"<what children will learn>\\\", \\\"target_age\\\": \\\"<age range>\\\", \\\"content_en\\\": \\\"<English content>\\\", \\\"content_cn\\\": \\\"<Traditional Chinese>\\\", \\\"content_my\\\": \\\"<Malay>\\\", \\\"scene_notes\\\": \\\"<illustration notes>\\\", \\\"platform\\\": \\\"{{1.platform}}\\\"}\"},{\"role\":\"assistant\",\"content\":\"{\"}]}",
+                                "serializeUrl": false,
+                                "shareCookies": false,
+                                "followRedirect": true,
+                                "useQuerystring": false,
+                                "followAllRedirects": false,
+                                "rejectUnauthorized": true,
+                                "gzip": true,
+                                "useMtls": false,
+                                "authPass": "",
+                                "authUser": "",
+                                "timeout": "",
+                                "ca": ""
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 700,
+                                    "y": 200
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "POST"
+                                        },
+                                        "headers": {
+                                            "mode": "chose"
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw"
+                                        },
+                                        "contentType": {
+                                            "label": "JSON (application/json)"
+                                        },
+                                        "qs": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "handleErrors",
+                                        "type": "boolean",
+                                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useNewZLibDeCompress",
+                                        "type": "hidden"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "serializeUrl",
+                                        "type": "boolean",
+                                        "label": "Serialize URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "get",
+                                                "head",
+                                                "post",
+                                                "put",
+                                                "patch",
+                                                "delete",
+                                                "options"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "qs",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Query String"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "validate": {
+                                            "enum": [
+                                                "raw",
+                                                "x_www_form_urlencoded",
+                                                "multipart_form_data"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseResponse",
+                                        "type": "boolean",
+                                        "label": "Parse response",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Content type",
+                                        "validate": {
+                                            "enum": [
+                                                "text/plain",
+                                                "application/json",
+                                                "application/xml",
+                                                "text/xml",
+                                                "text/html",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Request content"
+                                    },
+                                    {
+                                        "name": "followAllRedirects",
+                                        "type": "boolean",
+                                        "label": "Follow all redirect",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 13,
+                            "module": "json:ParseJSON",
+                            "version": 1,
+                            "mapper": {
+                                "json": "{{\"{\" + replace(replace(5.data.content[].text; \"```json\"; \"\"); \"```\"; \"\")}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 950,
+                                    "y": 200
+                                },
+                                "expect": [
+                                    {
+                                        "name": "json",
+                                        "type": "text",
+                                        "label": "JSON string",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "module": "http:ActionSendData",
+                            "version": 3,
+                            "parameters": {
+                                "handleErrors": true,
+                                "useNewZLibDeCompress": true
+                            },
+                            "mapper": {
+                                "url": "https://api.notion.com/v1/pages",
+                                "method": "post",
+                                "headers": [
+                                    {
+                                        "name": "Authorization",
+                                        "value": "Bearer {{11.data.value}}"
+                                    },
+                                    {
+                                        "name": "Notion-Version",
+                                        "value": "2022-06-28"
+                                    }
+                                ],
+                                "qs": [],
+                                "bodyType": "raw",
+                                "parseResponse": true,
+                                "contentType": "application/json",
+                                "data": "{\"parent\":{\"database_id\":\"330925ae-cb13-811c-8968-c429270c587f\"},\"properties\":{\"Name\":{\"title\":[{\"text\":{\"content\":\"{{13.title}}\"}}]},\"Status\":{\"select\":{\"name\":\"Review\"}},\"Platform\":{\"select\":{\"name\":\"{{13.platform}}\"}},\"Learning_Objective\":{\"rich_text\":[{\"text\":{\"content\":\"{{13.learning_objective}}\"}}]},\"Target_Age\":{\"rich_text\":[{\"text\":{\"content\":\"{{13.target_age}}\"}}]},\"Content_EN\":{\"rich_text\":[{\"text\":{\"content\":\"{{replace(replace(13.content_en; newline; \" \"); '\"'; \"'\")}}\"}}]},\"Content_CN\":{\"rich_text\":[{\"text\":{\"content\":\"{{replace(replace(13.content_cn; newline; \" \"); '\"'; \"'\")}}\"}}]},\"Content_MY\":{\"rich_text\":[{\"text\":{\"content\":\"{{replace(replace(13.content_my; newline; \" \"); '\"'; \"'\")}}\"}}]},\"Scene_Notes\":{\"rich_text\":[{\"text\":{\"content\":\"{{replace(replace(13.scene_notes; newline; \" \"); '\"'; \"'\")}}\"}}]}}}",
+                                "serializeUrl": false,
+                                "shareCookies": false,
+                                "followRedirect": true,
+                                "useQuerystring": false,
+                                "followAllRedirects": false,
+                                "rejectUnauthorized": true,
+                                "gzip": true,
+                                "useMtls": false,
+                                "authPass": "",
+                                "authUser": "",
+                                "timeout": "",
+                                "ca": ""
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 200
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "POST"
+                                        },
+                                        "headers": {
+                                            "mode": "chose"
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw"
+                                        },
+                                        "contentType": {
+                                            "label": "JSON (application/json)"
+                                        },
+                                        "qs": {
+                                            "mode": "chose"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "handleErrors",
+                                        "type": "boolean",
+                                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useNewZLibDeCompress",
+                                        "type": "hidden"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "serializeUrl",
+                                        "type": "boolean",
+                                        "label": "Serialize URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "get",
+                                                "head",
+                                                "post",
+                                                "put",
+                                                "patch",
+                                                "delete",
+                                                "options"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "qs",
+                                        "spec": [
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Query String"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "validate": {
+                                            "enum": [
+                                                "raw",
+                                                "x_www_form_urlencoded",
+                                                "multipart_form_data"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseResponse",
+                                        "type": "boolean",
+                                        "label": "Parse response",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Content type",
+                                        "validate": {
+                                            "enum": [
+                                                "text/plain",
+                                                "application/json",
+                                                "application/xml",
+                                                "text/xml",
+                                                "text/html",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Request content"
+                                    },
+                                    {
+                                        "name": "followAllRedirects",
+                                        "type": "boolean",
+                                        "label": "Follow all redirect",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "label": "Bababaa — Trilingual single pass",
+                    "filter": {
+                        "name": "Brand is Bababaa",
+                        "conditions": [
+                            [
+                                {
+                                    "a": "{{1.brand}}",
+                                    "b": "Bababaa",
+                                    "o": "text:equal"
+                                }
+                            ]
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}
